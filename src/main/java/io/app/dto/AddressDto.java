@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class ResponseToken {
-    private String token;
-    private boolean status;
+public class AddressDto {
+    private Long id;
+    private String street;
+    private String city;
+    private String postalCode;
+    private String state;
 }
