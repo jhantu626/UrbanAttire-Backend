@@ -33,5 +33,11 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(FileSizeExceededException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ApiResponse handleFileSizeExceededException(Exception ex){
+        return new ApiResponse(ex.getMessage(),false);
+    }
+
 
 }
