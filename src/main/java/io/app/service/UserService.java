@@ -14,6 +14,6 @@ public interface UserService {
     public UserDto profile(String token);
     public ApiResponse updateAddress(String token,AddressDto addressDto);
     public ApiResponse updateMobileNumber(String token,String mobileNo);
-    public ApiResponse updateProfilePic(String token, MultipartFile file);
+    public ApiResponse updateProfilePic(String token, MultipartFile file) throws IOException;
     public ResponseEntity<byte[]> getProfilePic(String token) throws IOException;
 }

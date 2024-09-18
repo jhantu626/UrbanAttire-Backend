@@ -49,7 +49,7 @@ public class UserController {
     @PutMapping("update-profile-pic")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse uploadProfilePic(@RequestHeader("Authorization") String token,
-                                        @RequestParam("profile") MultipartFile multipartFile){
+                                        @RequestParam("profile") MultipartFile multipartFile) throws IOException {
         token=token.substring(7);
         return service.updateProfilePic(token,multipartFile);
     }

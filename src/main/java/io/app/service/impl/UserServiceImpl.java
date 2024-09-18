@@ -1,5 +1,7 @@
 package io.app.service.impl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import io.app.dto.AddressDto;
 import io.app.dto.ApiResponse;
 import io.app.dto.UserDto;
@@ -24,6 +26,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final JwtService jwtService;
     private final ModelMapper modelMapper;
+    private final Cloudinary cloudinary;
     @Value("${files.profile-pic}")
     private String path;
 
@@ -76,38 +80,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse updateProfilePic(String token, MultipartFile file) {
+    public ApiResponse updateProfilePic(String token, MultipartFile file) throws IOException {
        //Gettting user
         String email=jwtService.extractUsername(token);
         User user=repository.findByEmail(email)
                 .orElseThrow(()->new ResourceNotFoundException("User Details Not Availble!"));
 
-        // If root path is not available so create
-        File folder=new File(this.path);
-        if(!folder.exists()){
-            folder.mkdir();
-        }
-
-        try{
-            //Make the full path
-            String extainsion=file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-            String fullPath=this.path+File.separator+user.getId()+extainsion;
-
-            //Process of saving data
-            byte[] image=file.getBytes();
-            FileOutputStream fileOutputStream=new FileOutputStream(fullPath);
-            fileOutputStream.write(image);
-            fileOutputStream.flush();
-            fileOutputStream.close();
-
-            //update user path
-            user.setProfileUrl(fullPath);
-            repository.save(user);
-
-            return new ApiResponse("Profile pic uploaded Successfully!",true);
-        }catch (Exception exception){
-            return new ApiResponse("Something went wrong!",false);
-        }
+        Map uploadResult =cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap());
+        String imageUrl=uploadResult.get("url").toString();
+        user.setProfileUrl(imageUrl);
+        repository.save(user);
+        return new ApiResponse("Profile pic uploaded successfully!",true);
     }
 
     @Override
