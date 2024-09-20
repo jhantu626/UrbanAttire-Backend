@@ -19,6 +19,7 @@ import java.util.Set;
 public class Orders {
     @Id
     private String id;
+    private String orderGeneratedId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId",nullable = false)
     private User user;

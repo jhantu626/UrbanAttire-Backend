@@ -19,6 +19,7 @@ import java.util.Set;
 @Data
 public class OrdersDto {
     private String id;
+    private String orderGeneratedId;
     private Set<OrderItem> orderItems=new HashSet<>();
     private double totalPrice;
     private LocalDateTime orderDate;

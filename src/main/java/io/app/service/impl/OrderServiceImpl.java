@@ -19,10 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,6 +54,8 @@ public class OrderServiceImpl implements OrderService {
             return orderItem;
         }).collect(Collectors.toSet());
 
+        String orderGeneratedId=orderGeneratedId();
+
         Orders order=new Orders();
         order.setUser(user);
         order.setOrderItems(orderItems);
@@ -62,6 +63,7 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalPrice(cartResponse.getTotalAmount());
         order.setShippedAddress(address);
         order.setOrderDate(LocalDateTime.now());
+        order.setOrderGeneratedId(orderGeneratedId);
         repository.save(order);
 
         cartRepository.deleteAll(carts);
@@ -78,8 +80,23 @@ public class OrderServiceImpl implements OrderService {
         List<OrdersDto> result=repository.findByUser(user)
                 .stream().map(order-> {
                     return modelMapper.map(order, OrdersDto.class);
-                }).collect(Collectors.toList());
+                })
+                .sorted(Comparator.comparing(OrdersDto::getOrderDate))
+                .collect(Collectors.toList());
+
+        result.stream().sorted();
 
         return result;
+    }
+
+    public String orderGeneratedId(){
+        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        SecureRandom random=new SecureRandom();
+        StringBuilder id=new StringBuilder();
+        for (int i=0;i<10;i++){
+            int index=random.nextInt(CHARACTERS.length());
+            id.append(CHARACTERS.charAt(index));
+        }
+        return id.toString();
     }
 }
