@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:mysql://mysql.railway.internal:3306/railway
+    username: root
+    password: MKfHWBMKTTXAIJwAAsgkQoRnMbCqWbee

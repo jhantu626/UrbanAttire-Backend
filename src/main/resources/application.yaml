@@ -1,11 +1,9 @@
 server:
   port: 9001
 
+
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/urbanAttire
-    username: root
-    password: pritam@123
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -24,10 +22,10 @@ spring:
   mvc:
     async:
       request-timeout: 10000
+  profiles:
+    active: ${ENV:dev}
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-
-
 

@@ -26,7 +26,4 @@ public class AuthController {
     public ResponseToken login(@RequestBody LoginRequest loginRequest){
         return authService.login(loginRequest);
     }
-
-
-
 }
